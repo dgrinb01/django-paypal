@@ -30,6 +30,10 @@ class PayPalPaymentsForm(forms.Form):
     u'<form action="https://www.paypal.com/cgi-bin/webscr" method="post"> ...'
     
     """    
+    
+    def get_PAYPAL_RECEIVER_EMAIL():
+        return getattr(settings.GATEWAY_SETTINGS,'PAYPAL_RECEIVER_EMAIL',None)
+
     CMD_CHOICES = (
         ("_xclick", "Buy now or Donations"), 
         ("_cart", "Shopping cart"), 
@@ -51,7 +55,7 @@ class PayPalPaymentsForm(forms.Form):
     DONATE = 'donate'
 
     # Where the money goes.
-    business = forms.CharField(widget=ValueHiddenInput(), initial=self.RECEIVER_EMAIL)
+    business = forms.CharField(widget=ValueHiddenInput(), initial=get_PAYPAL_RECEIVER_EMAIL)
     
     # Item information.
     amount = forms.IntegerField(widget=ValueHiddenInput())
@@ -98,7 +102,6 @@ class PayPalPaymentsForm(forms.Form):
         super(PayPalPaymentsForm, self).__init__(*args, **kwargs)
         self.button_type = button_type
         self.TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST", True)
-        self.RECEIVER_EMAIL = settings.GATEWAY_SETTINGS.PAYPAL_RECEIVER_EMAIL
 
 
     def render(self):

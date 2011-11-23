@@ -4,10 +4,10 @@ class PayPalSettingsError(Exception):
     """Raised when settings be bad."""
     
 
-TEST = getattr(settings, "PAYPAL_TEST", True)
+TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST", True)
 
 
-RECEIVER_EMAIL = settings.PAYPAL_RECEIVER_EMAIL
+RECEIVER_EMAIL = settings.GATEWAY_SETTINGS.PAYPAL_RECEIVER_EMAIL
 
 
 # API Endpoints.

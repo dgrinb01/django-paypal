@@ -15,11 +15,11 @@ from paypal.standard.pdt.signals import pdt_successful, pdt_failed
 # ... then check for this setting in conf.py
 class PayPalSettingsError(Exception):
     """Raised when settings are incorrect."""
-
-try:
-    IDENTITY_TOKEN = settings.PAYPAL_IDENTITY_TOKEN
-except:
-    raise PayPalSettingsError("You must set PAYPAL_IDENTITY_TOKEN in settings.py. Get this token by enabling PDT in your PayPal account.")
+    pass
+#try:
+#    IDENTITY_TOKEN = settings.PAYPAL_IDENTITY_TOKEN
+#except:
+#    raise PayPalSettingsError("You must set PAYPAL_IDENTITY_TOKEN in settings.py. Get this token by enabling PDT in your PayPal account.")
 
 
 class PayPalPDT(PayPalStandardBase):
@@ -42,13 +42,13 @@ class PayPalPDT(PayPalStandardBase):
         SUCCESS or FAILED.
         
         """
-        postback_dict = dict(cmd="_notify-synch", at=IDENTITY_TOKEN, tx=self.tx)
+        postback_dict = dict(cmd="_notify-synch", at=settings.GATEWAY_SETTINGS.PAYPAL_IDENTITY_TOKEN, tx=self.tx)
         postback_params = urlencode(postback_dict)
         return urllib2.urlopen(self.get_endpoint(), postback_params).read()
     
     def get_endpoint(self):
         """Use the sandbox when in DEBUG mode as we don't have a test_ipn variable in pdt."""
-        if getattr(settings, 'PAYPAL_DEBUG', settings.DEBUG):
+        if getattr(settings.GATEWAY_SETTINGS, 'PAYPAL_DEBUG', settings.DEBUG):
             return SANDBOX_POSTBACK_ENDPOINT
         else:
             return POSTBACK_ENDPOINT

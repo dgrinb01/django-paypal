@@ -45,7 +45,7 @@ def make_secret(form_instance, secret_fields=None):
             elif name in form_instance.fields and form_instance.fields[name].initial is not None:
                 data += unicode(form_instance.fields[name].initial)
 
-    secret = get_hexdigest('sha1', settings.SECRET_KEY, data)
+    secret = get_hexdigest('sha1', settings.GATEWAY_SETTINGS.SECRET_KEY, data)
     return secret
 
 def check_secret(form_instance, secret):

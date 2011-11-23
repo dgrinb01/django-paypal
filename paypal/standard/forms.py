@@ -5,8 +5,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from paypal.standard.conf import *
 from paypal.standard.widgets import ValueHiddenInput, ReservedValueHiddenInput
-from paypal.standard.conf import (POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT, 
-    RECEIVER_EMAIL)
+from paypal.standard.conf import (POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT)
 
 
 # 20:18:05 Jan 30, 2009 PST - PST timezone support is not included out of the box.
@@ -52,7 +51,7 @@ class PayPalPaymentsForm(forms.Form):
     DONATE = 'donate'
 
     # Where the money goes.
-    business = forms.CharField(widget=ValueHiddenInput(), initial=RECEIVER_EMAIL)
+    business = forms.CharField(widget=ValueHiddenInput(), initial=self.RECEIVER_EMAIL)
     
     # Item information.
     amount = forms.IntegerField(widget=ValueHiddenInput())
@@ -98,6 +97,9 @@ class PayPalPaymentsForm(forms.Form):
     def __init__(self, button_type="buy", *args, **kwargs):
         super(PayPalPaymentsForm, self).__init__(*args, **kwargs)
         self.button_type = button_type
+        self.TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST", True)
+        self.RECEIVER_EMAIL = settings.GATEWAY_SETTINGS.PAYPAL_RECEIVER_EMAIL
+
 
     def render(self):
         return mark_safe(u"""<form action="%s" method="post">
@@ -120,7 +122,7 @@ class PayPalPaymentsForm(forms.Form):
             (False, self.SUBSCRIBE): SUBSCRIPTION_IMAGE,
             (False, self.BUY): IMAGE,
             (False, self.DONATE): DONATION_IMAGE,
-        }[TEST, self.button_type]
+        }[self.TEST, self.button_type]
 
     def is_transaction(self):
         return not self.is_subscription()

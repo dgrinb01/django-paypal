@@ -34,6 +34,9 @@ class PayPalPaymentsForm(forms.Form):
     def get_PAYPAL_RECEIVER_EMAIL():
         return getattr(settings.GATEWAY_SETTINGS,'PAYPAL_RECEIVER_EMAIL',None)
 
+    def get_PAYPAL_TEST_MODE(self):
+        return getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST_MODE", True)
+
     CMD_CHOICES = (
         ("_xclick", "Buy now or Donations"), 
         ("_cart", "Shopping cart"), 
@@ -101,7 +104,6 @@ class PayPalPaymentsForm(forms.Form):
     def __init__(self, button_type="buy", *args, **kwargs):
         super(PayPalPaymentsForm, self).__init__(*args, **kwargs)
         self.button_type = button_type
-        self.TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST", True)
 
 
     def render(self):
@@ -125,7 +127,7 @@ class PayPalPaymentsForm(forms.Form):
             (False, self.SUBSCRIBE): SUBSCRIPTION_IMAGE,
             (False, self.BUY): IMAGE,
             (False, self.DONATE): DONATION_IMAGE,
-        }[self.TEST, self.button_type]
+        }[self.get_PAYPAL_TEST_MODE(), self.button_type]
 
     def is_transaction(self):
         return not self.is_subscription()

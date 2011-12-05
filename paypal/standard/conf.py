@@ -5,7 +5,7 @@ class PayPalSettingsError(Exception):
     
 
 # need to pull it from non static/global settings, in real time.
-# TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST", True)
+# TEST = getattr(settings.GATEWAY_SETTINGS, "PAYPAL_TEST_MODE", True)
 # RECEIVER_EMAIL = settings.GATEWAY_SETTINGS.PAYPAL_RECEIVER_EMAIL
 
 
